@@ -16,9 +16,15 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-// import { RATES } from '../../utils/data';
+import { SHIPPING_FEES } from '../../utils/data';
 
-import _ from 'lodash';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+
+// import _ from 'lodash';
 
 import { useConfirm } from 'material-ui-confirm';
 import { ToastEmitter } from '../../components/Toast';
@@ -45,49 +51,16 @@ function getSteps() {
   return ['Set Sender Info', 'Set Recipient Info', 'Set Package Details', 'Review Details'];
 }
 
-const METRO_MANILA_RATE = {
-  s: 100,
-  m: 150,
-  l: 180,
-  b: 220 
-}
-
-const GREATER_MANILA_RATE = {
-  s: 120,
-  m: 180,
-  l: 200,
-  b: 250 
-}
-
-const LUZON_RATE = {
-  s: 200,
-  m: 230,
-  l: 280,
-  b: 470 
-}
-
-const VISAYAS_RATE = {
-  s: 220,
-  m: 250,
-  l: 300,
-  b: 500 
-}
-
-const MINDANAO_RATE = {
-  s: 240,
-  m: 270,
-  l: 320,
-  b: 550 
-}
-
 const defaultDelivery = {
-  item_name: '',
-  is_provincial: 'F',
-  item_type: 'S-M',
+  item_type: 'S',
   item_amount: 0,
   total_amount: 0,
+  service_fees_payor: 'sender',
   package: {
     item_name: '',
+    item_description: '',
+    item_value: '',
+    payment_method: 'regular',
     is_cod: 'F',
     package: {
       name: 'Small',
@@ -110,6 +83,7 @@ const defaultDelivery = {
     },
     district_name: '',
     district: {
+      area: 'metro_manila',
       name: '',
       postal_code: ''
     },
@@ -121,6 +95,7 @@ const defaultDelivery = {
     full_name: '',
     province_name: '',
     province: {
+      area: 'metro_manila',
       name: ''
     },
     city_name: '',
@@ -234,11 +209,22 @@ const HomePage = () => {
             <ul>
               <li>Sender: {delivery.sender.full_name}, {delivery.sender.cellphone_no}, {delivery.sender.street}, {delivery.sender.landmarks}, {delivery.sender.province_name}, {delivery.sender.city_name}, {delivery.sender.district_name}, {delivery.sender.district.postal_code}</li>
               <li>Recipient: {delivery.recipient.full_name}, {delivery.recipient.cellphone_no}, {delivery.recipient.street}, {delivery.recipient.landmarks}, {delivery.recipient.province_name}, {delivery.recipient.city_name}, {delivery.recipient.district_name}, {delivery.recipient.district.postal_code}</li>
-              <li>Package: {delivery.package.item_name}, {delivery.package.package.name}</li>
-              <li>Shipping Rate: {delivery.package.package.rate}</li>
-              <li>Cash on Delivery: {delivery.package.is_cod}</li>
-              <li>Total Amount: {computeShippingRate()}</li>
+              <li>Package Description: {delivery.package.item_name}</li>
+              <li>Package Value: {delivery.package.item_value}</li>
+              <li>Shipping Fee: {computeShippingRate()}</li>
+              <li>Insurance Fee: 0</li>
+              <li>Payment Method: {delivery.package.payment_method === 'regular' ? 'Regular Transaction' : 'Cash on Delivery' }</li>
+              <li>Service Fee payor: {delivery.service_fees_payor}</li>
             </ul>
+            <FormControl component="fieldset">
+              <FormLabel component="legend">Service Fee will be charge by:</FormLabel>
+              <RadioGroup aria-label="service_fees_payor" name="service_fees_payor" value={delivery.service_fees_payor} onChange={(event) => {
+                handleDeliveryState('service_fees_payor', event.target.value)
+              }}>
+                <FormControlLabel value="sender" control={<Radio />} label="Sender" />
+                <FormControlLabel value="recipient" control={<Radio />} label="Recipient" />
+              </RadioGroup>
+            </FormControl>
           </Fragment>
         );
       default:
@@ -247,62 +233,61 @@ const HomePage = () => {
   }
 
   const requestDelivery = async () => {
-    let requestData  = {
-      client_id: "1",
-      is_cod: delivery.package.is_cod,
-      is_provincial: 'F',
-      item_name: delivery.package.item_name,
-      item_type: delivery.package.package.item_type,
-      item_amount: delivery.package.package.rate,
-      total_amount: computeShippingRate(),
-      sender: _.pick(delivery.sender, ['full_name', 'cellphone_no']),
-      recipient: _.pick(delivery.recipient, ['full_name', 'cellphone_no',])
+    let deliveryInfo = {
+       client_id: "10000",
+       item_type: delivery.package.package.item_type,
+       item_description: delivery.package.item_name,
+       item_value: parseInt(delivery.package.item_value, 10),
+       payment_method: delivery.package.payment_method,
+       service_fees_payor: delivery.service_fees_payor,
+       sender: {
+          full_name: delivery.sender.full_name,
+          cellphone_no: '0' + delivery.sender.cellphone_no,
+          email: "",
+          province: delivery.sender.province_name,
+          city: delivery.sender.province_name,
+          district: delivery.sender.district_name,
+          street: delivery.sender.street,
+          postal_code: delivery.sender.district.postal_code,
+          landmarks: delivery.sender.landmarks,
+          province_id: delivery.sender.province.id,
+          city_id: delivery.sender.city.id,
+          district_id: delivery.sender.district.id
+        },
+        recipient: {
+          full_name: delivery.recipient.full_name,
+          cellphone_no: '0' + delivery.recipient.cellphone_no,
+          email: "",
+          province: delivery.recipient.province_name,
+          city: delivery.recipient.province_name,
+          district: delivery.recipient.district_name,
+          street: delivery.recipient.street,
+          postal_code: delivery.recipient.district.postal_code,
+          landmarks: delivery.recipient.landmarks,
+          province_id: delivery.recipient.province.id,
+          city_id: delivery.recipient.city.id,
+          district_id: delivery.recipient.district.id
+      }
     }
 
-    requestData.sender.cellphone_no = '0' + delivery.sender.cellphone_no
-    requestData.sender.province = delivery.sender.province_name
-    requestData.sender.city = delivery.sender.city_name
-    requestData.sender.district = delivery.sender.district_name
-    requestData.sender.postal_code = delivery.sender.district.postal_code
-    requestData.sender.landmarks = delivery.sender.landmarks
-    requestData.sender.street = delivery.sender.street
-
-    requestData.recipient.cellphone_no = '0' + delivery.recipient.cellphone_no
-    requestData.recipient.province = delivery.recipient.province_name
-    requestData.recipient.city = delivery.recipient.city_name
-    requestData.recipient.district = delivery.recipient.district_name
-    requestData.recipient.postal_code = delivery.recipient.district.postal_code
-    requestData.recipient.landmarks = delivery.recipient.landmarks
-    requestData.recipient.street = delivery.recipient.street
-
-
-    let response = await deliveriesAPI.post(requestData)
+    let response = await deliveriesAPI.post(deliveryInfo)
     if (response.status === 200) {
-      ToastEmitter('success', 'Transaction are successfully created!')
+      ToastEmitter('success', 'Delivery are successfully created!')
       setDelivery(defaultDelivery)
     } else {
-      ToastEmitter('error', 'Something went wrong!')
+      ToastEmitter('error', 'Failed to create delivery!')
     }
-    
   }
 
   const computeShippingRate = () => {
-    let provinceName = delivery.recipient.province_name.toLowerCase().replace(' ', '_')
-    let shippingFee = 100
-    let greaterManila = [' laguna','cavite', 'rizal', 'bulacan']
+    let provinceArea = delivery.recipient.province.area
+    let item_type = delivery.package.package.item_type
+    let shippingFee = 0
 
-    if (provinceName === 'metro_manila') {
-      shippingFee = METRO_MANILA_RATE[delivery.package.package.item_code]
-    } else if (provinceName === 'luzon' && provinceName in greaterManila) {
-      shippingFee = GREATER_MANILA_RATE[delivery.package.package.item_code]
-    } else if (provinceName === 'luzon') {
-      shippingFee = LUZON_RATE[delivery.package.package.item_code]
-    } else if (provinceName === 'visayas') {
-      shippingFee = VISAYAS_RATE[delivery.package.package.item_code]
-    } else {
-      shippingFee = MINDANAO_RATE[delivery.package.package.item_code]
+    if (SHIPPING_FEES[item_type][provinceArea]['fee'] !== undefined) {
+      shippingFee = SHIPPING_FEES[item_type][provinceArea]['fee']
     }
-
+   
     return shippingFee
   }
 
@@ -332,7 +317,7 @@ const HomePage = () => {
     // <Page pageTitle={intl.formatMessage({ id: 'home' })}>
     <Page pageTitle={'Delivery'}>
       <Helmet>
-        <title>{ 'e-lamove | Delivery' }</title>
+        <title>{ 'E-Lamove | Delivery' }</title>
       </Helmet>
       <Scrollbar
         style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}

@@ -4,7 +4,7 @@ import Page from 'material-ui-shell/lib/containers/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import { useIntl } from 'react-intl'
 import MaterialTable from 'material-table'
-
+import { Helmet } from 'react-helmet'
 import AddBox from '@material-ui/icons/AddBox';
 import ArrowDownward from '@material-ui/icons/ArrowDownward';
 import Check from '@material-ui/icons/Check';
@@ -15,6 +15,7 @@ import DeleteOutline from '@material-ui/icons/DeleteOutline';
 import Edit from '@material-ui/icons/Edit';
 import FilterList from '@material-ui/icons/FilterList';
 import FirstPage from '@material-ui/icons/FirstPage';
+import GetAppIcon from '@material-ui/icons/GetApp';
 import LastPage from '@material-ui/icons/LastPage';
 import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
@@ -35,6 +36,7 @@ const tableIcons = {
     Edit: forwardRef((props, ref) => <Edit {...props} ref={ref} />),
     Export: forwardRef((props, ref) => <SaveAlt {...props} ref={ref} />),
     Filter: forwardRef((props, ref) => <FilterList {...props} ref={ref} />),
+    GetAppIcon: forwardRef((props, ref) => <GetAppIcon {...props} ref={ref} />),
     FirstPage: forwardRef((props, ref) => <FirstPage {...props} ref={ref} />),
     LastPage: forwardRef((props, ref) => <LastPage {...props} ref={ref} />),
     NextPage: forwardRef((props, ref) => <ChevronRight {...props} ref={ref} />),
@@ -84,36 +86,44 @@ const Transaction = () => {
       .catch(() => { /* ... */ });
   }
 
+  const downloadReceipt = (transaction) => {
+    ToastEmitter('info', 'Downloading the transaction receipt!')
+    window.open(process.env.REACT_APP_WEB_API + '/deliveries/' + transaction['id'].toString() + '/receipts')
+  }
+
+  const renderStatus = (transaction) => {    
+    let status = transaction.status.replace('_', ' ')
+
+    return status.charAt(0).toUpperCase() + status.slice(1);
+  }
+
   return (
     <Page pageTitle={intl.formatMessage({ id: 'transaction' })}>
+       <Helmet>
+        <title>{ 'E-lamove | Trasanction' }</title>
+      </Helmet>
       <Scrollbar>
         {displayTransactionDialog()}
         <Container>
-        <h1>Informations</h1>
-        
+        <h1>{''}</h1>
         <MaterialTable
           icons={tableIcons}
-          search={false}
-          title="Trasanctions"
+          title={'List of Transactions'}
+          options={{
+            search: false,
+            sorting: false
+          }}
           columns={[
-            {
-              title: 'Tracking ID',
-              field: 'tracking_id',
-            },
-            {
-              title: 'Receipt ID',
-              field: 'receipt_id',
-            },
-            { title: 'Cash on Develiry', field: 'is_cod' },
-            { title: 'Provincial', field: 'is_provincial' },
-            { title: 'Successful', field: 'is_successful' },
-            { title: 'Remitted', field: 'is_remitted' },
-            { title: 'Total Amount', field: 'total_amount' },
-            { title: 'Created', field: 'created_timestamp' },
+            { title: 'Tracking ID', field: 'tracking_number'},
+            { title: 'Receipt ID', field: 'receipt_id'},
+            { title: 'Sender', field: 'sender.full_name' },
+            { title: 'Item Description', field: 'item_description' },
+            { title: 'Item Value', field: 'item_value' },
+            { title: 'Total', field: 'total' },
+            { title: 'Status', field: 'status', render: renderStatus},
           ]}
           data={query =>
             new Promise((resolve, reject) => {
-              console.log('query', query)
               let url = process.env.REACT_APP_WEB_API + '/deliveries?'
               url += 'limit=' + query.pageSize
               url += '&page=' + (query.page + 1)
@@ -143,8 +153,35 @@ const Transaction = () => {
               onClick: (event, rowData) => {
                 deleteTransaction(rowData)
               }
+            },
+            {
+              icon: tableIcons.GetAppIcon,
+              tooltip: 'Download Receipt',
+              onClick: (event, rowData) => {
+                downloadReceipt(rowData)
+              }
             }
           ]}
+          // detailPanel={[
+          //   {
+          //     tooltip: 'Show Name',
+          //     render: rowData => {
+          //       return (
+          //         <div
+          //           style={{
+          //             fontSize: 100,
+          //             textAlign: 'center',
+          //             color: 'white',
+          //             backgroundColor: '#43A047',
+          //           }}
+          //         >
+          //           {rowData.sender.full_name}
+          //           {rowData.sender.province}
+          //         </div>
+          //       )
+          //     },
+          //   },
+          // ]}
         />
         </Container>
         

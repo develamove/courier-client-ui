@@ -79,11 +79,11 @@ const packageTypes = [
 const PackageDialog = (props) => {
   const { btnText, isOpen, getPackageInfo, defaults } = props
   const classes = useStyles();
-  const [packageName, setPackageName] = useState(defaults.item_description && '')
-  const [packageValue, setPackageValue] = useState(defaults.item_value && 0)
-  const [selectedPackage, setSelectedPackage] = useState(['S', 'M', 'L', 'B'].indexOf(defaults.package.item_code) && 0)
+  const [packageName, setPackageName] = useState(defaults.item_description !== undefined ? defaults.item_description : '')
+  const [packageValue, setPackageValue] = useState(defaults.item_value !== undefined ? defaults.item_value : 0)
+  const [selectedPackage, setSelectedPackage] = useState(defaults.package.item_code !== undefined ? ['S', 'M', 'L', 'B'].indexOf(defaults.package.item_code) : 0)
   const [errors, setErrors] = useState({})
-  const [paymentMethod, setPaymentMethod] = useState(defaults.payment_method && 'regular')
+  const [paymentMethod, setPaymentMethod] = useState(defaults.payment_method !== undefined ? defaults.payment_method : 'regular')
   const [isDialogOpen, setDialogOpen] = useState(isOpen || false)
 
   const handleDialogState = (isOpen) => {

@@ -185,7 +185,7 @@ const TransactionDialog = (props) => {
         <DialogTitle>Trasactions Details</DialogTitle>
 
         <DialogContent>
-
+        
           <TextField
             autoFocus
             margin="dense"

@@ -20,11 +20,13 @@ import LastPage from '@material-ui/icons/LastPage';
 import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
+import CancellationDialog from './CancellationDialog'
+// import TransactionDialog from './TransactionDialog';
 import ViewColumn from '@material-ui/icons/ViewColumn';
-import axios from 'axios';
+// import axios from 'axios';
 import { ToastEmitter } from '../../components/Toast';
-import TransactionDialog from './TransactionDialog';
-import { useConfirm } from 'material-ui-confirm';
+// import { useConfirm } from 'material-ui-confirm';
+import { useAuth } from 'base-shell/lib/providers/Auth'
 import 'react-toastify/dist/ReactToastify.css';
 
 const tableIcons = {
@@ -49,49 +51,50 @@ const tableIcons = {
   };
 
 const Transaction = () => {
+  const auth = useAuth()
   const intl = useIntl()
-  const confirm = useConfirm();
-  // const [trasanctions, setTrasanctions] = useState([])
+  // const confirm = useConfirm();
   const [isTransDialogOpen, setTransDialogOpen] = useState(false)
-
   const [selectedTransaction, setSelectedTransaction] = useState()
-
-
+  
   const displayTransactionDialog = () => {
     if (isTransDialogOpen === true) {
-      return <TransactionDialog isOpen={isTransDialogOpen} transaction={selectedTransaction}/>
+      return <CancellationDialog isOpen={isTransDialogOpen} transaction={selectedTransaction}/>
     }
 
     return null
   }
 
-  const requestCancelTransaction = (trasanction) => {
-    axios.put(process.env.REACT_APP_WEB_API + '/deliveries/' + trasanction['id'].toString(), {
-      is_cancelled: 'T'
-    })
-    .then(function (response) {
-      console.log(response)
-      ToastEmitter('success', 'Transaction are now cancelled')
-    })
-    .catch(function (error) {
-      ToastEmitter('error', 'Something went wrong')
-    })
-  }
+  // const requestCancelTransaction = (trasanction) => {
+  //   axios.put(process.env.REACT_APP_WEB_API + '/deliveries/' + trasanction['id'].toString(), {
+  //     is_cancelled: 'T'
+  //   })
+  //   .then(function (response) {
+  //     ToastEmitter('success', 'Transaction are now cancelled')
+  //   })
+  //   .catch(function (error) {
+  //     ToastEmitter('error', 'Something went wrong')
+  //   })
+  // }
 
-  const deleteTransaction = (trasanction) => {
-    confirm({ description: 'Cancel Transaction?, this action is permanent' })
-      .then(() => {
-        requestCancelTransaction({id: trasanction['id']})
-      })
-      .catch(() => { /* ... */ });
-  }
+  // const deleteTransaction = (trasanction) => {
+  //   confirm({ description: 'Cancel Transaction?, this action is permanent' })
+  //     .then(() => {
+  //       requestCancelTransaction({id: trasanction['id']})
+  //     })
+  //     .catch(() => { /* ... */ });
+  // }
 
   const downloadReceipt = (transaction) => {
     ToastEmitter('info', 'Downloading the transaction receipt!')
     window.open(process.env.REACT_APP_WEB_API + '/deliveries/' + transaction['id'].toString() + '/receipts')
   }
 
-  const renderStatus = (transaction) => {    
+  const renderStatus = (transaction) => {   
+    if (transaction.status === null) {
+      return ''
+    } 
+    
     let status = transaction.status.replace('_', ' ')
 
     return status.charAt(0).toUpperCase() + status.slice(1);
@@ -100,7 +103,7 @@ const Transaction = () => {
   return (
     <Page pageTitle={intl.formatMessage({ id: 'transaction' })}>
        <Helmet>
-        <title>{ 'E-lamove | Trasanction' }</title>
+        <title>{ 'E-lamove | Transactions' }</title>
       </Helmet>
       <Scrollbar>
         {displayTransactionDialog()}
@@ -127,31 +130,59 @@ const Transaction = () => {
               let url = process.env.REACT_APP_WEB_API + '/deliveries?'
               url += 'limit=' + query.pageSize
               url += '&page=' + (query.page + 1)
-              fetch(url)
-                .then(response => response.json())
+
+              fetch(url, {
+                method: 'GET',
+                headers: {
+                  'Accept': 'application/json',
+                  'Authorization': 'Bearer ' + auth.auth.token,
+                }
+              })
+                .then(response => {
+                  if (response.ok) {
+                    return response.json()
+                  }
+
+                  return Promise.reject(response);
+                })
                 .then(result => {
                   resolve({
-                    data: result.data.deliveries,
-                    page: result.data.page - 1,
-                    totalCount: result.data.total,
+                    data: (result.data.deliveries !== undefined) ? result.data.deliveries : 0,
+                    page: (result.data.page !== undefined) ? parseInt(result.data.page, 10) - 1 : 0,
+                    totalCount: (result.data.total !== undefined) ? result.data.total : 0
+                  })
+                }).catch(error => {
+                  
+                  if (error.status === 401) {
+                    ToastEmitter('error', 'Session expired, please re-login!')
+                    setTimeout(function(){
+                      auth.setAuth({ isAuthenticated: false })
+                    }, 1500);
+                  }
+
+                  resolve({
+                    data: [],
+                    page: 0,
+                    totalCount: 0,
                   })
                 })
             })
           }
           actions={[
+            // {
+            //   icon: tableIcons.Edit,
+            //   tooltip: 'Modify Trasaction',
+            //   onClick: (event, rowData) => {
+            //     setSelectedTransaction(rowData)
+            //     setTransDialogOpen(!isTransDialogOpen)
+            //   }
+            // },
             {
-              icon: tableIcons.Edit,
-              tooltip: 'Modify Trasaction',
+              icon: tableIcons.Delete,
+              tooltip: 'Cancel Transaction',
               onClick: (event, rowData) => {
                 setSelectedTransaction(rowData)
                 setTransDialogOpen(!isTransDialogOpen)
-              }
-            },
-            {
-              icon: tableIcons.Delete,
-              tooltip: 'Cancel Trasaction',
-              onClick: (event, rowData) => {
-                deleteTransaction(rowData)
               }
             },
             {

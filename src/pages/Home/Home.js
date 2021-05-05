@@ -1,14 +1,12 @@
+import Alert from '@material-ui/lab/Alert';
 import React, { Fragment, useState } from 'react'
 
 import Page from 'material-ui-shell/lib/containers/Page'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 // import { useIntl } from 'react-intl'
-import { Helmet } from 'react-helmet'
+
 import AddressDialog from './AddressDialog';
 import PackageDialog from './PackageDialog';
-
-
-import { makeStyles } from '@material-ui/core/styles';
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
@@ -16,7 +14,7 @@ import StepContent from '@material-ui/core/StepContent';
 import Button from '@material-ui/core/Button';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import { SHIPPING_FEES } from '../../utils/data';
+
 
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
@@ -25,11 +23,16 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 
 // import _ from 'lodash';
-
+import axios from 'axios';
+import { Helmet } from 'react-helmet'
+import { makeStyles } from '@material-ui/core/styles';
+import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useConfirm } from 'material-ui-confirm';
 import { ToastEmitter } from '../../components/Toast';
+import { SHIPPING_FEES } from '../../utils/data';
+import _ from 'lodash';
 
-import { deliveriesAPI } from '../../services/api/deliveries';
+// import { deliveriesAPI } from '../../services/api/deliveries';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -59,7 +62,7 @@ const defaultDelivery = {
   package: {
     item_name: '',
     item_description: '',
-    item_value: '',
+    item_value: 0,
     payment_method: 'regular',
     is_cod: 'F',
     package: {
@@ -115,6 +118,9 @@ const defaultDelivery = {
 
 const HomePage = () => {
   const confirm = useConfirm();
+  const auth = useAuth()
+  const [errors, setErrors] = useState({})
+
   // const intl = useIntl()
   const [delivery, setDelivery] = useState(defaultDelivery)
   const [cachedSenderLocations, setCachedSenderLocations] = useState({
@@ -234,7 +240,7 @@ const HomePage = () => {
 
   const requestDelivery = async () => {
     let deliveryInfo = {
-       client_id: "10000",
+      //  client_id: "10000",
        item_type: delivery.package.package.item_type,
        item_description: delivery.package.item_name,
        item_value: parseInt(delivery.package.item_value, 10),
@@ -270,13 +276,43 @@ const HomePage = () => {
       }
     }
 
-    let response = await deliveriesAPI.post(deliveryInfo)
-    if (response.status === 200) {
-      ToastEmitter('success', 'Delivery are successfully created!')
-      setDelivery(defaultDelivery)
-    } else {
-      ToastEmitter('error', 'Failed to create delivery!')
+    const headers = {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${auth.auth.token}`,
     }
+
+    axios.post(process.env.REACT_APP_WEB_API + '/deliveries', deliveryInfo, {
+      headers: headers
+    })
+    .then(function (response) {
+      if (_.isEmpty(response.data.errors) === false) {
+        ToastEmitter('error', 'Failed to create transaction!')
+        setErrors(response.data.errors)
+      } else {
+        setErrors({})
+        setDelivery(defaultDelivery)
+        ToastEmitter('success', 'Succesfully created!')
+      }
+      
+    })
+    .catch(function (error) {
+      if (error.response.status === 401) {
+        ToastEmitter('error', 'Session expired, please re-login!')
+        setTimeout(function(){
+          auth.setAuth({ isAuthenticated: false })
+        }, 1500);
+      } else {
+        ToastEmitter('error', 'Something wrong, please refresh the page!')
+      }
+    })
+
+    // let response = await deliveriesAPI.post(deliveryInfo)
+    // if (response.status === 200) {
+    //   ToastEmitter('success', 'Delivery are successfully created!')
+    //   setDelivery(defaultDelivery)
+    // } else {
+    //   ToastEmitter('error', 'Failed to create delivery!')
+    // }
   }
 
   const computeShippingRate = () => {
@@ -306,7 +342,7 @@ const HomePage = () => {
   }
 
   const handleFinish = () => {
-    confirm({ description: 'This action is permanent!' })
+    confirm({ description: 'Create a delivery?' })
       .then(() => { 
         requestDelivery()
       })
@@ -322,7 +358,30 @@ const HomePage = () => {
       <Scrollbar
         style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}
       >
-        <h1>Details</h1>
+        <h1>{''}</h1>
+
+        { _.isEmpty(errors) === false &&
+          Object.keys(errors).map((error, index) => {
+              if (typeof errors[error][0] === 'string') {
+                return (
+                  <Alert key={index} severity="error">{error}: {errors[error][0]}</Alert>
+                )
+              }
+              return (
+                <Alert key={index} severity="error">{error}
+                <ul>
+                {
+                   Object.keys(errors[error][0]).map((error1, index) => {
+                    return (
+                      <li key={index}>{error1}:  {errors[error][0][error1][0]}</li>
+                    )
+                   })
+                }
+                </ul>
+                </Alert>
+              )
+            })
+        }
     
       <Stepper activeStep={activeStep} orientation="vertical">
         {steps.map((label, index) => (

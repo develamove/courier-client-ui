@@ -122,7 +122,7 @@ const InfoDialog = (props) => {
             <p>
               Name: {transactionInfo.sender.full_name} <br />
               Address: {transactionInfo.sender.province}, {transactionInfo.sender.city} {transactionInfo.sender.district}, {transactionInfo.sender.street}, 
-              {transactionInfo.sender.landmarks !==  '' ? transactionInfo.recipsenderient.landmarks + ',' : ''}{transactionInfo.sender.postal_code}<br />
+              {transactionInfo.sender.landmarks !==  '' ? transactionInfo.sender.landmarks + ',' : ''}{transactionInfo.sender.postal_code}<br />
               Contact No.: {transactionInfo.sender.cellphone_no}  <br />
             </p>
             <Typography variant="h6" gutterBottom>

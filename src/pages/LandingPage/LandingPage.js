@@ -56,14 +56,12 @@ const LandingPage = () => {
         'receipt_id': trackingID
       }
     }
-
-    axios.get(process.env.REACT_APP_WEB_API + '/deliveries' , {
+    axios.get(process.env.REACT_APP_WEB_API + '/deliveries/' + trackingID , {
       params: requestParams
     })
     .then(function (response) {
-      console.log(response.data.data.deliveries)
-      if (_.isEmpty(response.data.data.deliveries) === false) {
-        setTransaction(response.data.data.deliveries[0])
+      if (_.isEmpty(response.data.data.delivery) === false) {
+        setTransaction(response.data.data.delivery)
       } else {
         setTransaction({})
         ToastEmitter('error', 'Trasanction Not found')
@@ -103,8 +101,9 @@ const LandingPage = () => {
         <OutlinedInput
           autoFocus
           error={errors.hasOwnProperty('tracking_id') === true}
-          helperText={errors.hasOwnProperty('tracking_id') ? errors['tracking_id'][0] : '' }
+          helpertext={errors.hasOwnProperty('tracking_id') ? errors['tracking_id'][0] : '' }
           type={'text'}
+          label={'tracking filter'}
           value={trackingID}
           onChange={(event) => {
             setTrackingID(event.currentTarget.value)
@@ -116,6 +115,7 @@ const LandingPage = () => {
                 aria-label="toggle password visibility"
                 onClick={handleSearchTransaction}
                 edge="end"
+                label={'tracking filter'}
               >
                  <SearchIcon />
               </IconButton>

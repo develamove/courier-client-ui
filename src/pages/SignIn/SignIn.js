@@ -77,7 +77,6 @@ const SignIn = () => {
       authenticate({
         displayName: username,
         email: 'user',
-        client_id: response.data.client_id,
         token: response.data.token
       })
     }
@@ -91,11 +90,9 @@ const SignIn = () => {
     let _route = '/home'
 
     if (_location.state && _location.state.from) {
-      _route = _location.state.from.pathname
-      history.push(_route)
-    } else {
-      history.push(_route)
+      _route = _location.state.from.pathname 
     }
+    history.push(_route)
   }
 
   return (

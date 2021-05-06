@@ -1,28 +1,22 @@
 import Alert from '@material-ui/lab/Alert';
-import React, { Fragment, useState } from 'react'
-
-import Page from 'material-ui-shell/lib/containers/Page'
-import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
-// import { useIntl } from 'react-intl'
-
 import AddressDialog from './AddressDialog';
+import Button from '@material-ui/core/Button';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
 import PackageDialog from './PackageDialog';
+import Page from 'material-ui-shell/lib/containers/Page'
+import Paper from '@material-ui/core/Paper';
+import Radio from '@material-ui/core/Radio';
+import RadioGroup from '@material-ui/core/RadioGroup';
+import React, { Fragment, useState } from 'react'
+import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
-import Button from '@material-ui/core/Button';
-import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-
-
-import Radio from '@material-ui/core/Radio';
-import RadioGroup from '@material-ui/core/RadioGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-
-// import _ from 'lodash';
+import _ from 'lodash';
 import axios from 'axios';
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@material-ui/core/styles';
@@ -30,9 +24,6 @@ import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useConfirm } from 'material-ui-confirm';
 import { ToastEmitter } from '../../components/Toast';
 import { SHIPPING_FEES } from '../../utils/data';
-import _ from 'lodash';
-
-// import { deliveriesAPI } from '../../services/api/deliveries';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -64,15 +55,15 @@ const defaultDelivery = {
     item_description: '',
     item_value: 0,
     payment_method: 'regular',
-    is_cod: 'F',
     package: {
       name: 'Small',
       item_type: 'S',
-      item_code: 's',
+      item_code: 'S',
       rate: 60,
       weight: 'Max weight: 3 kg',
       size: '23.7cm x 39.8cm',
-      description: ''}
+      description: ''
+    }
   },
   sender: {
     full_name: '',
@@ -120,8 +111,6 @@ const HomePage = () => {
   const confirm = useConfirm();
   const auth = useAuth()
   const [errors, setErrors] = useState({})
-
-  // const intl = useIntl()
   const [delivery, setDelivery] = useState(defaultDelivery)
   const [cachedSenderLocations, setCachedSenderLocations] = useState({
     cities: {
@@ -133,7 +122,6 @@ const HomePage = () => {
       selected: [{id: 0, name: ''}],
     }
   })
-
   const [cachedRecipientLocations, setCachedRecipientLocations] = useState({
     cities: {
       cached: {},
@@ -144,7 +132,6 @@ const HomePage = () => {
       selected: [{id: 0, name: ''}],
     }
   })
-
   const classes = useStyles();
   const [activeStep, setActiveStep] =useState(0);
   const steps = getSteps();
@@ -240,7 +227,6 @@ const HomePage = () => {
 
   const requestDelivery = async () => {
     let deliveryInfo = {
-      //  client_id: "10000",
        item_type: delivery.package.package.item_type,
        item_description: delivery.package.item_name,
        item_value: parseInt(delivery.package.item_value, 10),
@@ -249,7 +235,7 @@ const HomePage = () => {
        sender: {
           full_name: delivery.sender.full_name,
           cellphone_no: '0' + delivery.sender.cellphone_no,
-          email: "",
+          email: '',
           province: delivery.sender.province_name,
           city: delivery.sender.province_name,
           district: delivery.sender.district_name,
@@ -263,7 +249,7 @@ const HomePage = () => {
         recipient: {
           full_name: delivery.recipient.full_name,
           cellphone_no: '0' + delivery.recipient.cellphone_no,
-          email: "",
+          email: '',
           province: delivery.recipient.province_name,
           city: delivery.recipient.province_name,
           district: delivery.recipient.district_name,
@@ -293,7 +279,6 @@ const HomePage = () => {
         setDelivery(defaultDelivery)
         ToastEmitter('success', 'Succesfully created!')
       }
-      
     })
     .catch(function (error) {
       if (error.response.status === 401) {
@@ -305,14 +290,6 @@ const HomePage = () => {
         ToastEmitter('error', 'Something wrong, please refresh the page!')
       }
     })
-
-    // let response = await deliveriesAPI.post(deliveryInfo)
-    // if (response.status === 200) {
-    //   ToastEmitter('success', 'Delivery are successfully created!')
-    //   setDelivery(defaultDelivery)
-    // } else {
-    //   ToastEmitter('error', 'Failed to create delivery!')
-    // }
   }
 
   const computeShippingRate = () => {
@@ -402,7 +379,7 @@ const HomePage = () => {
                     // disabled
                     variant="contained"
                     color="primary"
-                    onClick={activeStep === steps.length - 1 ? handleFinish: handleNext}
+                    onClick={activeStep === steps.length - 1 ? handleFinish : handleNext}
                     className={classes.button}
                   >
                     {activeStep === steps.length - 1 ? 'Finish' : 'Next'}

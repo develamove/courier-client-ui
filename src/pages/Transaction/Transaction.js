@@ -23,7 +23,7 @@ import Remove from '@material-ui/icons/Remove';
 import SaveAlt from '@material-ui/icons/SaveAlt';
 import Search from '@material-ui/icons/Search';
 import CancellationDialog from './CancellationDialog';
-import EventDialog from './EventDialog';
+// import EventDialog from './EventDialog';
 import InfoDialog from './InfoDialog';
 import ViewColumn from '@material-ui/icons/ViewColumn';
 import { Helmet } from 'react-helmet'
@@ -62,7 +62,7 @@ const Transaction = () => {
   const intl = useIntl()
   const [isCancellationDialogOpen, setCancellationDialogOpen] = useState(false)
   const [isInfoDialogOpen, setInfoDialogOpen] = useState(false)
-  const [isEventDialogOpen, setEventDialogOpen] = useState(false)
+  // const [isEventDialogOpen, setEventDialogOpen] = useState(false)
   const [selectedTransaction, setSelectedTransaction] = useState()
   
   const handleDialogClose = (dialogName) => {
@@ -74,9 +74,9 @@ const Transaction = () => {
       setCancellationDialogOpen(false)
     }
 
-    if (dialogName === 'event') {
-      setEventDialogOpen(false)
-    }
+    // if (dialogName === 'event') {
+    //   setEventDialogOpen(false)
+    // }
   }
 
   const displayTransactionDialog = () => {
@@ -95,13 +95,13 @@ const Transaction = () => {
     return null
   }
 
-  const displayEventDialog = () => {
-    if (isEventDialogOpen === true) {
-      return <EventDialog isOpen={isEventDialogOpen} transaction={selectedTransaction} handleClose={handleDialogClose}/>
-    }
+  // const displayEventDialog = () => {
+  //   if (isEventDialogOpen === true) {
+  //     return <EventDialog isOpen={isEventDialogOpen} transaction={selectedTransaction} handleClose={handleDialogClose}/>
+  //   }
 
-    return null
-  }
+  //   return null
+  // }
 
   const downloadReceipt = (transaction) => {
     ToastEmitter('info', 'Downloading the transaction receipt!')
@@ -135,10 +135,10 @@ const Transaction = () => {
     setInfoDialogOpen(true)
   }
 
-  const showEventDialog = (transaction) => {
-    setSelectedTransaction(transaction)
-    setEventDialogOpen(true)
-  }
+  // const showEventDialog = (transaction) => {
+  //   setSelectedTransaction(transaction)
+  //   setEventDialogOpen(true)
+  // }
 
   return (
     <Page pageTitle={intl.formatMessage({ id: 'transaction' })}>
@@ -148,7 +148,7 @@ const Transaction = () => {
       <Scrollbar>
         {displayTransactionDialog()}
         {displayInfoDialog()}
-        {displayEventDialog()}
+        {/* {displayEventDialog()} */}
         <Container>
         <h1>{''}</h1>
         <MaterialTable
@@ -216,11 +216,11 @@ const Transaction = () => {
               tooltip: 'Show Transaction Info',
               onClick: (event, rowData) => showInfoDialog(rowData)
             },
-            {
-              icon: tableIcons.CreateIcon,
-              tooltip: 'Create Event',
-              onClick: (event, rowData) => showEventDialog(rowData)
-            },
+            // {
+            //   icon: tableIcons.CreateIcon,
+            //   tooltip: 'Create Event',
+            //   onClick: (event, rowData) => showEventDialog(rowData)
+            // },
             {
               icon: tableIcons.CancelScheduleSendIcon,
               tooltip: 'Cancel Transaction',

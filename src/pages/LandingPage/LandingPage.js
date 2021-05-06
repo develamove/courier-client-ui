@@ -53,7 +53,7 @@ const LandingPage = () => {
 
     if (isChecked === 'T') {
       requestParams = {
-        'receipt_id': trackingID
+        'filter_key': 'receipt_id'
       }
     }
     axios.get(process.env.REACT_APP_WEB_API + '/deliveries/' + trackingID , {

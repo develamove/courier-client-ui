@@ -207,10 +207,10 @@ const HomePage = () => {
               <li>Shipping Fee: {computeShippingRate()}</li>
               <li>Insurance Fee: 0</li>
               <li>Payment Method: {delivery.package.payment_method === 'regular' ? 'Regular Transaction' : 'Cash on Delivery' }</li>
-              <li>Service Fee payor: {_.capitalize(delivery.service_fees_payor)}</li>
+              <li>Shipping Fee payor: {_.capitalize(delivery.service_fees_payor)}</li>
             </ul>
             <FormControl component="fieldset">
-              <FormLabel component="legend">Service Fee will be charge by:</FormLabel>
+              <FormLabel component="legend">Shipping Fee will be charge by:</FormLabel>
               <RadioGroup aria-label="service_fees_payor" name="service_fees_payor" value={delivery.service_fees_payor} onChange={(event) => {
                 handleDeliveryState('service_fees_payor', event.target.value)
               }}>

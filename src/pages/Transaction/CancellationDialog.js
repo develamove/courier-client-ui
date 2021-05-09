@@ -27,24 +27,32 @@ const REASONS = [
     value: ''
   },
   {
-    name: 'reason1',
-    value: 'reason1'
+    name: 'Item/s not ready',
+    value: 'Item/s not ready',
   },
   {
-    name: 'reason2',
-    value: 'reason2'
+    name: 'Item/s ouor of stock.',
+    value: 'Item/s ouor of stock.',
   },
   {
-    name: 'reason3',
-    value: 'reason3'
+    name: 'Out of town or not around.',
+    value: 'Out of town or not around.',
   },
   {
-    name: 'reason4',
-    value: 'reason4'
+    name: 'Enterned wrong pick-up address.',
+    value: 'Enterned wrong pick-up address.',
   },
   {
-    name: 'reason5',
-    value: 'reason5'
+    name: 'Buyer requested to cancel transaction.',
+    value: 'Buyer requested to cancel transaction.',
+  },
+  {
+    name: 'Buyer provided incorrect details.',
+    value: 'Buyer provided incorrect details.',
+  },
+  {
+    name: 'Incorrect Cash-on-Delivery (COD) amount.',
+    value: 'Incorrect Cash-on-Delivery (COD) amount.',
   }
 ]
 

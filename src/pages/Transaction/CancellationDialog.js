@@ -59,8 +59,8 @@ const REASONS = [
 const CancellationDialog = (props) => {
   const auth = useAuth()
   const [reason, setReason] = useState({
-    name: 'reason1',
-    value: 'reason1'
+    name: 'Item/s not ready.',
+    value: 'Item/s not ready.'
   })
 
   // const classes = useStyles();

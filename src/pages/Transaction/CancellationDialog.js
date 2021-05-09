@@ -27,20 +27,20 @@ const REASONS = [
     value: ''
   },
   {
-    name: 'Item/s not ready',
-    value: 'Item/s not ready',
+    name: 'Item/s not ready.',
+    value: 'Item/s not ready.',
   },
   {
-    name: 'Item/s ouor of stock.',
-    value: 'Item/s ouor of stock.',
+    name: 'Item/s out of stock.',
+    value: 'Item/s out of stock.',
   },
   {
     name: 'Out of town or not around.',
     value: 'Out of town or not around.',
   },
   {
-    name: 'Enterned wrong pick-up address.',
-    value: 'Enterned wrong pick-up address.',
+    name: 'Entered wrong pick-up address.',
+    value: 'Entered wrong pick-up address.',
   },
   {
     name: 'Buyer requested to cancel transaction.',

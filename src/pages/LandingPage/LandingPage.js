@@ -14,6 +14,12 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 import { makeStyles } from '@material-ui/core/styles';
 
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+// import Typography from '@material-ui/core/Typography';
+import Button from '@material-ui/core/Button';
+// import MenuIcon from '@material-ui/icons/Menu';
+
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -30,7 +36,13 @@ const useStyles = makeStyles((theme) => ({
   },
   logoSearchBar: {
    
-  }
+  },
+  menuButton: {
+    marginRight: theme.spacing(2),
+  },
+  title: {
+    flexGrow: 1,
+  },
 }));
 
 const LandingPage = () => {
@@ -89,7 +101,19 @@ const LandingPage = () => {
       <Helmet>
         <title>{ 'E-lamove | Tracking Page' }</title>
       </Helmet>
-
+      <AppBar position="static">
+        <Toolbar>
+          {/* <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            News
+          </Typography> */}
+          <Button color="inherit"
+            onClick={() => {}}
+          >Create new Booking</Button>
+        </Toolbar>
+      </AppBar>
     <Grid container className={classes.root} direction={'column'} spacing={2} justify="center">
       <Grid item xs={12}>
       </Grid>
@@ -97,7 +121,7 @@ const LandingPage = () => {
       <div>
         <Link to="/home">Create new Booking</Link>
       </div>
-      <h1>WHERE'S MY DELIVERY?</h1>  
+      <h2>WHERE'S MY DELIVERY?</h2>  
         <OutlinedInput
           autoFocus
           error={errors.hasOwnProperty('tracking_id') === true}

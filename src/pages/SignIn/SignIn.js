@@ -11,7 +11,8 @@ import { useAuth } from 'base-shell/lib/providers/Auth'
 import { useHistory } from 'react-router-dom'
 import { useIntl } from 'react-intl'
 import { useMenu } from 'material-ui-shell/lib/providers/Menu'
-import { clientLogin } from '../../services/api/clients'
+// import { clientLogin } from '../../services/api/clients'
+import axios from 'axios'
 import _ from 'lodash'
 
 const useStyles = makeStyles((theme) => ({
@@ -65,21 +66,51 @@ const SignIn = () => {
 
   async function handleSubmit(event) {
     event.preventDefault()
-    let response = await clientLogin.post({
+
+    axios.post(process.env.REACT_APP_WEB_API + '/clients/login', {
       username: username,
       password: password
     })
+    .then(function (response) {
+      if (_.isEmpty(response.errors) === false) {
+        setIsValid(false)
+      } else {
+        setIsValid(true)
+        authenticate({
+          displayName: username,
+          email: 'user',
+          token: response.data.token
+        })
+      }
+    })
+    .catch(function (error) {
+      console.log(error)
+      // if (error.response.status === 401) {
+      //   ToastEmitter('error', 'Session expired, please re-login!')
+      //   setTimeout(function(){
+      //     auth.setAuth({ isAuthenticated: false })
+      //   }, 1500);
+      // } else {
+      //   ToastEmitter('error', 'Something wrong, please refresh the page!')
+      // }
+    })
 
-    if (_.isEmpty(response.errors) === false) {
-      setIsValid(false)
-    } else {
-      setIsValid(true)
-      authenticate({
-        displayName: username,
-        email: 'user',
-        token: response.data.token
-      })
-    }
+
+    // let response = await clientLogin.post({
+    //   username: username,
+    //   password: password
+    // })
+
+    // if (_.isEmpty(response.errors) === false) {
+    //   setIsValid(false)
+    // } else {
+    //   setIsValid(true)
+    //   authenticate({
+    //     displayName: username,
+    //     email: 'user',
+    //     token: response.data.token
+    //   })
+    // }
   }
 
   const authenticate = (user) => {

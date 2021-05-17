@@ -79,7 +79,7 @@ const SignIn = () => {
         authenticate({
           displayName: username,
           email: 'user',
-          token: response.data.token
+          token: response.data.data.token
         })
       }
     })

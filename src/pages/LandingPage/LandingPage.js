@@ -16,6 +16,34 @@ import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { ToastEmitter } from '../../components/Toast';
 
+
+
+// import Box from '@material-ui/core/Box';
+// import Stepper from '@material-ui/core/Stepper';
+// import Step from '@material-ui/core/Step';
+// import StepLabel from '@material-ui/core/StepLabel';
+// import StepContent from '@material-ui/core/StepContent';
+// import Paper from '@material-ui/core/Paper';
+// import Typography from '@material-ui/core/Typography';
+
+
+
+// const events = [
+//   {
+//     label: 'label1',
+//     description: 'description1'
+//   },
+//   {
+//     label: 'label2',
+//     description: 'description2'
+//   },
+//   {
+//     label: 'label3',
+//     description: 'description3'
+//   }
+// ]
+
+
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -33,12 +61,12 @@ const useStyles = makeStyles((theme) => ({
    
   },
   gridContainer: {
-    [theme.breakpoints.down('sm')]: {
-      margin: 0,
-      '& > .MuiGrid-item': {
-        padding: 0,
-      },
-    },
+    // [theme.breakpoints.down('sm')]: {
+    //   margin: 0,
+    //   '& > .MuiGrid-item': {
+    //     padding: 0,
+    //   },
+    // },
   },
   menuButton: {
     marginRight: theme.spacing(2),
@@ -96,10 +124,10 @@ const LandingPage = () => {
         top: 0,
         bottom: 0,
         right: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        alignItems: 'center',
-        flexDirection: 'column',
+        // display: 'flex',
+        // justifyContent: 'center',
+        // alignItems: 'center',
+        // flexDirection: 'column',
       }}
     >
       <Helmet>
@@ -112,18 +140,21 @@ const LandingPage = () => {
           >Create new Booking</Button>
         </Toolbar>
       </AppBar>
-    <Grid container className={classes.root} direction={'column'} spacing={2} justify="center">
+      <Grid container 
+        className={classes.root} 
+        direction={'row'}
+        justify="center" 
+      >
       <Grid 
         item 
-        xs={12} 
         classes={{
           root: classes.gridContainer,
         }}
       >
+        {/* <h1>Test</h1> */}
       </Grid>
       <Grid  
         item
-        xs={12} 
         classes={{
           root: classes.gridContainer,
         }}>
@@ -186,6 +217,29 @@ const LandingPage = () => {
           </ol>
         </div>
         }
+        {/* <Box sx={{ maxWidth: 400 }}>
+      <Stepper activeStep={0} orientation="vertical">
+        {events.map((event, index) => (
+          <Step key={event.label}>
+            <StepLabel>
+              {event.label}
+            </StepLabel>
+            <StepContent>
+              <Typography>{event.description}</Typography>
+              
+            </StepContent>
+          </Step>
+        ))}
+      </Stepper>
+      {0 === events.length && (
+        <Paper square elevation={0} sx={{ p: 3 }}>
+          <Typography>All events completed - you&apos;re finished</Typography>
+          <Button onClick={() => {}} sx={{ mt: 1, mr: 1 }}>
+            Reset
+          </Button>
+        </Paper>
+      )}
+    </Box> */}
       </Grid>
     </Grid>
     </div>

@@ -12,7 +12,7 @@ import PropTypes from 'prop-types';
 import _ from 'lodash';
 import { Validator } from '../../utils/customValidator';
 import { locationsAPI } from '../../services/api/locations';
-import { provincesWithoutPickUpLocation, provincesWithPickUpLocation } from '../../utils/data';
+import { provincesWithoutPickUpLocation, provincesWithPickUpLocation, citiesWithPickUp } from '../../utils/data';
 
 /**
  * For the following object keys (province, city, district) 
@@ -113,6 +113,12 @@ const AddressDialog = (props) => {
 
     let citiesCopy = { ...cities }
     let cityKey = province.id.toString()
+
+    if (cityKey in citiesWithPickUp && type === 'sender') {
+      citiesCopy['selected'] = citiesWithPickUp[cityKey]
+      setCities(citiesCopy)
+      return;
+    }
 
     if (cityKey in citiesCopy.cached) {  
       citiesCopy['selected'] = citiesCopy.cached[cityKey]

@@ -5,7 +5,7 @@ import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import PropTypes from 'prop-types';
 import Typography from '@material-ui/core/Typography';
-import React, { useState, Fragment } from 'react'
+import React, { useState, Fragment } from 'react';
 
 const transanctionInfo = {
   item_type: 'S',
@@ -104,16 +104,16 @@ const InfoDialog = (props) => {
             General Info
           </Typography>
             <p>
-              Tracking No.: {transactionInfo.tracking_number} <br />
-              Receipt ID: {transactionInfo.receipt_id === '' ? 'N/A' : transactionInfo.receipt_id} <br />
-              Created: {transactionInfo.created_timestamp} <br />
+              Tracking Number: {transactionInfo.tracking_number} <br />
+              Receipt Number: {transactionInfo.receipt_id === '' ? 'N/A' : transactionInfo.receipt_id} <br />
+              Date Created: {transactionInfo.created_timestamp} <br />
             </p>
             <Typography variant="h6" gutterBottom>
               Package Info
             </Typography>
             <p>
-              Name.: {transactionInfo.item_description} <br />
-              Value: {transactionInfo.item_value}  <br />
+              Description: {transactionInfo.item_description} <br />
+              Amount: {transactionInfo.item_value}  <br />
               Type: {transformItemType(transactionInfo.item_type)}  <br />
             </p>
             <Typography variant="h6" gutterBottom>
@@ -123,7 +123,7 @@ const InfoDialog = (props) => {
               Name: {transactionInfo.sender.full_name} <br />
               Address: {transactionInfo.sender.province}, {transactionInfo.sender.city} {transactionInfo.sender.district}, {transactionInfo.sender.street}, 
               {transactionInfo.sender.landmarks !==  '' ? transactionInfo.sender.landmarks + ',' : ''}{transactionInfo.sender.postal_code}<br />
-              Contact No.: {transactionInfo.sender.cellphone_no}  <br />
+              Mobile Number: {transactionInfo.sender.cellphone_no}  <br />
             </p>
             <Typography variant="h6" gutterBottom>
               Recipient Info
@@ -132,7 +132,7 @@ const InfoDialog = (props) => {
               Name: {transactionInfo.recipient.full_name} <br />
               Address: {transactionInfo.recipient.province}, {transactionInfo.recipient.city} {transactionInfo.recipient.district}, {transactionInfo.recipient.street}, 
               {transactionInfo.recipient.landmarks !==  '' ? transactionInfo.recipient.landmarks + ',' : ''} {transactionInfo.recipient.postal_code}<br />
-              Contact No.: {transactionInfo.recipient.cellphone_no}  <br />
+              Mobile Number: {transactionInfo.recipient.cellphone_no}  <br />
             </p>
             <Typography variant="h6" gutterBottom>
               Fees

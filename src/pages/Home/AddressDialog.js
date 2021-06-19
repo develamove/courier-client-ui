@@ -247,7 +247,8 @@ const AddressDialog = (props) => {
               },
             }}
             margin="dense"
-            label={capitalizeFirstLetter(type) + '\'s Street'}
+            // label={capitalizeFirstLetter(type) + '\'s Street'}
+            label={'Adress'}
             type="text"
             name={"street"}
             value={info.street}
@@ -404,7 +405,7 @@ const AddressDialog = (props) => {
             name={"landmarks"}
             value={info.landmarks}
             onChange={handleInfoChange}
-            label="Other location"
+            label="Landmark"
             type="text"
             fullWidth
           />
@@ -417,7 +418,8 @@ const AddressDialog = (props) => {
                 autoComplete: 'off',
               },
             }}
-            label={capitalizeFirstLetter(type) + '\'s Full Name'}
+            // label={capitalizeFirstLetter(type) + '\'s Full Name'}
+            label={'Full Name'}
             type="text"
             name={'full_name'}
             value={info.full_name}
@@ -435,7 +437,8 @@ const AddressDialog = (props) => {
                 autoComplete: 'off',
               },
             }}
-            label={capitalizeFirstLetter(type) + '\'s Mobile Number'}
+            // label={capitalizeFirstLetter(type) + '\'s Mobile Number'}
+            label={'Mobile Number'}
             type="text"
             name={'cellphone_no'}
             value={info.cellphone_no}
@@ -457,7 +460,7 @@ const AddressDialog = (props) => {
               saveAdress()
              }
             } color="primary">
-            Use Address
+            Save
           </Button>
         </DialogActions>
         </Dialog>     

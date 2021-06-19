@@ -160,11 +160,11 @@ const Transaction = () => {
             sorting: false
           }}
           columns={[
-            { title: 'Tracking ID', field: 'tracking_number'},
-            { title: 'Receipt ID', field: 'receipt_id'},
+            { title: 'Tracking Number', field: 'tracking_number'},
+            { title: 'Receipt Number', field: 'receipt_id'},
             { title: 'Sender', field: 'sender.full_name' },
-            { title: 'Item Description', field: 'item_description' },
-            { title: 'Item Value', field: 'item_value' },
+            { title: 'Package Description', field: 'item_description' },
+            { title: 'Package Amount', field: 'item_value' },
             { title: 'Status', field: 'status', render: renderStatus},
           ]}
           data={query =>

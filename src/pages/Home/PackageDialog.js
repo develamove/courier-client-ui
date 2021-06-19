@@ -155,7 +155,7 @@ const PackageDialog = (props) => {
           <TextField
             autoFocus
             margin="dense"
-            label={'Package Name'}
+            label={'Description'}
             type="text"
             name={"packageName"}
             value={packageName}
@@ -203,7 +203,7 @@ const PackageDialog = (props) => {
         { paymentMethod === 'cod' && 
           <TextField
             margin="dense"
-            label={'Package Value'}
+            label={'Amount'}
             type="text"
             name={"packageValue"}
             value={packageValue}
@@ -222,7 +222,7 @@ const PackageDialog = (props) => {
             Cancel
           </Button>
           <Button onClick={savePackageInfo} color="primary">
-            Save Item Details
+            Save
           </Button>
         </DialogActions>
         </Dialog>     

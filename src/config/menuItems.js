@@ -106,13 +106,6 @@ const getMenuItems = (props) => {
       leftIcon: <ViewListIcon />,
     },
     {
-      value: '/about',
-      visible: true,
-      primaryText: intl.formatMessage({ id: 'about' }),
-      leftIcon: <InfoOutlined />,
-    },
-    { divider: true },
-    {
       primaryText: intl.formatMessage({ id: 'settings' }),
       primaryTogglesNestedList: true,
       leftIcon: <SettingsIcon />,

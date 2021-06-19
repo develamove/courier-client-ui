@@ -345,7 +345,11 @@ const HomePage = () => {
   }
 
   const handleFinish = () => {
-    confirm({ description: 'Create a delivery?' })
+    confirm({ 
+      title: 'Delivery confirmation',
+      description: 'Make sure the details you entered are correct. Do you want to proceed?', 
+      confirmationText: 'Proceed'
+    })
       .then(() => { 
         requestDelivery()
       })

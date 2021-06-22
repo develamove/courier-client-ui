@@ -357,7 +357,6 @@ const HomePage = () => {
   }
 
   return (
-    // <Page pageTitle={intl.formatMessage({ id: 'home' })}>
     <Page pageTitle={'Delivery'}>
       <Helmet>
         <title>{ 'E-Lamove | Delivery' }</title>
@@ -377,8 +376,7 @@ const HomePage = () => {
               return (
                 <Alert key={index} severity="error">{error}
                 <ul>
-                {
-                   Object.keys(errors[error][0]).map((error1, index) => {
+                { Object.keys(errors[error][0]).map((error1, index) => {
                     return (
                       <li key={index}>{error1}:  {errors[error][0][error1][0]}</li>
                     )

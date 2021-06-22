@@ -1,12 +1,12 @@
+import React, { useState } from 'react';
 import AppBar from '@material-ui/core/AppBar';
 import Button from '@material-ui/core/Button';
+import HomeIcon from '@material-ui/icons/Home';
 import Checkbox from '@material-ui/core/Checkbox';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Grid from '@material-ui/core/Grid';
-import IconButton from "@material-ui/core/IconButton";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import OutlinedInput from '@material-ui/core/OutlinedInput';
-import React, { useState } from 'react'
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
 import SearchIcon from "@material-ui/icons/Search";
 import Toolbar from '@material-ui/core/Toolbar';
 import _ from 'lodash';
@@ -17,31 +17,30 @@ import { useHistory } from "react-router-dom";
 import { ToastEmitter } from '../../components/Toast';
 
 
+import Box from '@material-ui/core/Box';
+import Stepper from '@material-ui/core/Stepper';
+import Step from '@material-ui/core/Step';
+import StepLabel from '@material-ui/core/StepLabel';
+import StepContent from '@material-ui/core/StepContent';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import LogoImg from '../../assets/img/track-delivery-graphic.svg';
 
-// import Box from '@material-ui/core/Box';
-// import Stepper from '@material-ui/core/Stepper';
-// import Step from '@material-ui/core/Step';
-// import StepLabel from '@material-ui/core/StepLabel';
-// import StepContent from '@material-ui/core/StepContent';
-// import Paper from '@material-ui/core/Paper';
-// import Typography from '@material-ui/core/Typography';
 
-
-
-// const events = [
-//   {
-//     label: 'label1',
-//     description: 'description1'
-//   },
-//   {
-//     label: 'label2',
-//     description: 'description2'
-//   },
-//   {
-//     label: 'label3',
-//     description: 'description3'
-//   }
-// ]
+const events = [
+  {
+    label: 'label1',
+    description: 'description1'
+  },
+  {
+    label: 'label2',
+    description: 'description2'
+  },
+  {
+    label: 'label3',
+    description: 'description3'
+  }
+]
 
 
 const useStyles = makeStyles((theme) => ({
@@ -54,8 +53,11 @@ const useStyles = makeStyles((theme) => ({
   trackDeliveryImage: {
     backgroundImage: `url('../../assets/img/track-delivery-graphic.svg')`
   },
+  inputSearchBarRoot: {
+    
+  },
   inputSearchBar: {
-    padding: '0 0 0 5px'
+    height: '55px'
   },
   logoSearchBar: {
    
@@ -74,6 +76,50 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
+  searchBoxAdorment: {
+    padding: '11px',
+    // backgroundColor: 'blue',
+    height: '100%',
+  },
+  searchMainRootAdorment: {
+    margin: '0',
+    padding: '0',
+    height: '100%',
+    borderTopRightRadius: '8px',
+    borderBottomRightRadius: '8px',
+    '&&&:before': {
+      borderBottom: 'none'
+    },
+    '&&:after': {
+      borderBottom: 'none'
+    }
+  },
+  searchRootAdorment: {
+    background: '#3f51b5',
+    margin: '0 0 0 8px',
+    borderTopRightRadius: '8px',
+    borderBottomRightRadius: '8px',
+    cursor: 'pointer'
+    
+  },
+  checkBoxRoot: {
+    color: '#e0c822',
+    checked: {}
+  },
+  checkBox: {
+    color: '#e0c822',
+    checked: {}
+  },
+  gridContainerRight: {
+    padding: '20px'
+  },
+  appBar: {
+    backgroundColor: '#ffffff'
+  },
+  divHorizontal: {
+    height: '5px',
+    background: '#3f51b5'
+  }
 }));
 
 const LandingPage = () => {
@@ -119,6 +165,7 @@ const LandingPage = () => {
   return (
     <div
       style={{
+        backgroundColor: '#f2f3f8',
         position: 'absolute',
         left: 0,
         top: 0,
@@ -133,11 +180,27 @@ const LandingPage = () => {
       <Helmet>
         <title>{ 'E-lamove | Tracking Page' }</title>
       </Helmet>
-      <AppBar position="static">
+      <AppBar 
+        position="static"
+        className={classes.appBar}
+      >
+        <div className={classes.divHorizontal}></div>
         <Toolbar>
-          <Button color="inherit"
+          <img 
+            src={LogoImg}
+            alt="Company logo"
+						style="width: 100%; max-width: 200px" 
+          />
+
+          <Button
+            style={{
+              color: '#000000'
+            }}
             onClick={() => { history.push('/home'); }}
-          >Create new Booking</Button>
+          >
+            <HomeIcon />
+            Create new Booking
+          </Button>
         </Toolbar>
       </AppBar>
       <Grid container 
@@ -156,46 +219,74 @@ const LandingPage = () => {
       <Grid  
         item
         classes={{
-          root: classes.gridContainer,
+          root: classes.gridContainerRight,
         }}>
-      <h2>WHERE'S MY DELIVERY?</h2>  
-        <OutlinedInput
+      <Typography
+        component={'h2'}
+        variant={'h6'}
+      >
+        WHERE'S MY DELIVERY?
+      </Typography>  
+        <TextField 
+          classes={{
+            root: classes.inputSearchBarRoot
+          }}
           autoFocus
+          label="Tracking Number"
+          margin={'normal'}
+          variant={'filled'}
           error={errors.hasOwnProperty('tracking_id') === true}
           helpertext={errors.hasOwnProperty('tracking_id') ? errors['tracking_id'][0] : '' }
           type={'text'}
-          label={'tracking filter'}
           value={trackingID}
           onChange={(event) => {
             setTrackingID(event.currentTarget.value)
           }}
           className={classes.inputSearchBar}
-          endAdornment={
-            <InputAdornment position="end" className={classes.logoSearchBar}>
-              <IconButton
-                aria-label="toggle password visibility"
-                onClick={handleSearchTransaction}
-                edge="end"
-                label={'tracking filter'}
+          InputProps={{
+            classes: {
+              root: classes.searchMainRootAdorment
+            },
+            endAdornment: (
+              <InputAdornment  
+                position="end"
+                classes={{
+                  root: classes.searchRootAdorment
+                }}
+                className={classes.searchBoxAdorment}
               >
-                 <SearchIcon />
-              </IconButton>
-            </InputAdornment>
-          }
-          labelWidth={70}
-          />
+                <SearchIcon 
+                  style={{
+                    color: '#ffffff'
+                  }}
+                  aria-label="toggle password visibility"
+                  onClick={handleSearchTransaction}
+                  edge="end"
+                />
+              </InputAdornment>
+            ),
+          }}
+        />
           <br />
            <FormControlLabel
-            control={<Checkbox 
-              checked={(isChecked === 'T')}
-              name="isChecked"
-              onClick={() => {
-                let newValues = isChecked === 'T' ? 'F' : 'T'
-                setIsChecked(newValues)
-              }}
-          />}
-      label="Search by using Receipt ID (Waybill ID)"
-    />
+            control={
+              <Checkbox
+                classes={{
+                  root: classes.checkBoxRoot
+                }}
+                style={{
+                  color: '#e0c822',
+                }}
+                className={classes.checkBox}
+                checked={(isChecked === 'T')}
+                name="isChecked"
+                onClick={() => {
+                  let newValues = isChecked === 'T' ? 'F' : 'T'
+                  setIsChecked(newValues)
+                }}
+            />}
+              label="Search by Receipt Number"
+            />
       {_.isEmpty(transaction) === true ? 
         <p>No Transaction available</p> 
       :
@@ -217,29 +308,29 @@ const LandingPage = () => {
           </ol>
         </div>
         }
-        {/* <Box sx={{ maxWidth: 400 }}>
-      <Stepper activeStep={0} orientation="vertical">
-        {events.map((event, index) => (
-          <Step key={event.label}>
-            <StepLabel>
-              {event.label}
-            </StepLabel>
-            <StepContent>
-              <Typography>{event.description}</Typography>
-              
-            </StepContent>
-          </Step>
-        ))}
-      </Stepper>
-      {0 === events.length && (
-        <Paper square elevation={0} sx={{ p: 3 }}>
-          <Typography>All events completed - you&apos;re finished</Typography>
-          <Button onClick={() => {}} sx={{ mt: 1, mr: 1 }}>
-            Reset
-          </Button>
-        </Paper>
-      )}
-    </Box> */}
+        <Box sx={{ maxWidth: 400 }}>
+        <Stepper activeStep={0} orientation="vertical">
+          {events.map((event, index) => (
+            <Step key={event.label}>
+              <StepLabel>
+                {event.label}
+              </StepLabel>
+              <StepContent>
+                <Typography>{event.description}</Typography>
+                
+              </StepContent>
+            </Step>
+          ))}
+        </Stepper>
+        {0 === events.length && (
+          <Paper square elevation={0} sx={{ p: 3 }}>
+            <Typography>All events completed - you&apos;re finished</Typography>
+            <Button onClick={() => {}} sx={{ mt: 1, mr: 1 }}>
+              Reset
+            </Button>
+          </Paper>
+        )}
+      </Box>
       </Grid>
     </Grid>
     </div>

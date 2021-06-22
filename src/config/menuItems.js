@@ -7,7 +7,6 @@ import {
   FormatTextdirectionRToL as RTLIcon,
   FormatTextdirectionLToR as LTRIcon,
   GetApp,
-  // InfoOutlined,
   Language as LanguageIcon,
   ViewList as ViewListIcon,
   Lock as LockIcon,

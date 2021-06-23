@@ -17,30 +17,30 @@ import { useHistory } from "react-router-dom";
 import { ToastEmitter } from '../../components/Toast';
 
 
-import Box from '@material-ui/core/Box';
-import Stepper from '@material-ui/core/Stepper';
-import Step from '@material-ui/core/Step';
-import StepLabel from '@material-ui/core/StepLabel';
-import StepContent from '@material-ui/core/StepContent';
-import Paper from '@material-ui/core/Paper';
+// import Box from '@material-ui/core/Box';
+// import Stepper from '@material-ui/core/Stepper';
+// import Step from '@material-ui/core/Step';
+// import StepLabel from '@material-ui/core/StepLabel';
+// import StepContent from '@material-ui/core/StepContent';
+// import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-import LogoImg from '../../assets/img/track-delivery-graphic.svg';
+// import LogoImg from '../../assets/img/track-delivery-graphic.svg';
 
 
-const events = [
-  {
-    label: 'label1',
-    description: 'description1'
-  },
-  {
-    label: 'label2',
-    description: 'description2'
-  },
-  {
-    label: 'label3',
-    description: 'description3'
-  }
-]
+// const events = [
+//   {
+//     label: 'label1',
+//     description: 'description1'
+//   },
+//   {
+//     label: 'label2',
+//     description: 'description2'
+//   },
+//   {
+//     label: 'label3',
+//     description: 'description3'
+//   }
+// ]
 
 
 const useStyles = makeStyles((theme) => ({
@@ -186,11 +186,11 @@ const LandingPage = () => {
       >
         <div className={classes.divHorizontal}></div>
         <Toolbar>
-          <img 
+          {/* <img 
             src={LogoImg}
             alt="Company logo"
 						style="width: 100%; max-width: 200px" 
-          />
+          /> */}
 
           <Button
             style={{
@@ -308,7 +308,7 @@ const LandingPage = () => {
           </ol>
         </div>
         }
-        <Box sx={{ maxWidth: 400 }}>
+        {/* <Box sx={{ maxWidth: 400 }}>
         <Stepper activeStep={0} orientation="vertical">
           {events.map((event, index) => (
             <Step key={event.label}>
@@ -330,7 +330,7 @@ const LandingPage = () => {
             </Button>
           </Paper>
         )}
-      </Box>
+      </Box> */}
       </Grid>
     </Grid>
     </div>

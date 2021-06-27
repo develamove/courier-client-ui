@@ -288,7 +288,13 @@ const LandingPage = () => {
               label="Search by Receipt Number"
             />
       {_.isEmpty(transaction) === true ? 
-        <p>No Transaction available</p> 
+        <Typography variant={'body1'}
+        style={{
+          textAlign: 'center'
+        }}
+        >
+          No Transaction available
+        </Typography> 
       :
         <div>
           <h3>Details</h3>

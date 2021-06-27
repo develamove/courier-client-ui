@@ -1,3 +1,5 @@
+import React, { Fragment, useState } from 'react';
+import _ from 'lodash';
 import Alert from '@material-ui/lab/Alert';
 import AddressDialog from './AddressDialog';
 import Button from '@material-ui/core/Button';
@@ -9,15 +11,14 @@ import Page from 'material-ui-shell/lib/containers/Page'
 import Paper from '@material-ui/core/Paper';
 import Radio from '@material-ui/core/Radio';
 import RadioGroup from '@material-ui/core/RadioGroup';
-import React, { Fragment, useState } from 'react'
 import Scrollbar from 'material-ui-shell/lib/components/Scrollbar/Scrollbar'
 import Stepper from '@material-ui/core/Stepper';
 import Step from '@material-ui/core/Step';
 import StepLabel from '@material-ui/core/StepLabel';
 import StepContent from '@material-ui/core/StepContent';
 import Typography from '@material-ui/core/Typography';
-import _ from 'lodash';
 import axios from 'axios';
+import { DeliveryValidator } from './validator.js';
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@material-ui/core/styles';
 import { useAuth } from 'base-shell/lib/providers/Auth'
@@ -136,7 +137,25 @@ const HomePage = () => {
   const [activeStep, setActiveStep] =useState(0);
   const steps = getSteps();
 
-  const handleNext = () => {
+  const handleNext = (data) => {
+    
+    if (activeStep === 0) {
+      let isValid = DeliveryValidator.validateAddress('sender', delivery.sender)
+      if (isValid === false) {
+        return
+      }
+    } else if (activeStep === 1) {
+      let isValid = DeliveryValidator.validateAddress('recipient', delivery.recipient)
+      if (isValid === false) {
+        return
+      }
+    } else if (activeStep === 2) {
+      let isValid = DeliveryValidator.validatePackage(delivery.package)
+      if (isValid === false) {
+        return
+      }
+    }
+
     setActiveStep((prevActiveStep) => prevActiveStep + 1);
   };
 
@@ -346,7 +365,7 @@ const HomePage = () => {
 
   const handleFinish = () => {
     confirm({ 
-      title: 'Delivery confirmation',
+      title: 'Booking confirmation',
       description: 'Make sure the details you entered are correct. Do you want to proceed?', 
       confirmationText: 'Proceed'
     })
@@ -357,9 +376,9 @@ const HomePage = () => {
   }
 
   return (
-    <Page pageTitle={'Delivery'}>
+    <Page pageTitle={'New Booking'}>
       <Helmet>
-        <title>{ 'E-Lamove | Delivery' }</title>
+        <title>{ 'E-Lamove | New Booking' }</title>
       </Helmet>
       <Scrollbar
         style={{ height: '100%', width: '100%', display: 'flex', flex: 1 }}

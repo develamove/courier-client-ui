@@ -8,40 +8,20 @@ import Grid from '@material-ui/core/Grid';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import SearchIcon from "@material-ui/icons/Search";
+import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import Toolbar from '@material-ui/core/Toolbar';
 import _ from 'lodash';
 import axios from 'axios';
+import moment from 'moment';
 import { Helmet } from 'react-helmet'
 import { makeStyles } from '@material-ui/core/styles';
 import { useHistory } from "react-router-dom";
 import { ToastEmitter } from '../../components/Toast';
 
 
-// import Box from '@material-ui/core/Box';
-// import Stepper from '@material-ui/core/Stepper';
-// import Step from '@material-ui/core/Step';
-// import StepLabel from '@material-ui/core/StepLabel';
-// import StepContent from '@material-ui/core/StepContent';
-// import Paper from '@material-ui/core/Paper';
+import Box from '@material-ui/core/Box';
+import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
-// import LogoImg from '../../assets/img/track-delivery-graphic.svg';
-
-
-// const events = [
-//   {
-//     label: 'label1',
-//     description: 'description1'
-//   },
-//   {
-//     label: 'label2',
-//     description: 'description2'
-//   },
-//   {
-//     label: 'label3',
-//     description: 'description3'
-//   }
-// ]
-
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,16 +62,20 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
   },
   searchMainRootAdorment: {
+    backgroundColor: '#ffffff',
     margin: '0',
     padding: '0',
     height: '100%',
     borderTopRightRadius: '8px',
     borderBottomRightRadius: '8px',
+    '.Mui-focused': {
+    backgroundColor: '#ffffff',
+    },
     '&&&:before': {
-      borderBottom: 'none'
+      borderBottom: 'none',
     },
     '&&:after': {
-      borderBottom: 'none'
+      borderBottom: 'none',
     }
   },
   searchRootAdorment: {
@@ -119,12 +103,64 @@ const useStyles = makeStyles((theme) => ({
   divHorizontal: {
     height: '5px',
     background: '#3f51b5'
+  },
+  currentEvent: {
+    padding: '15px',
+    textAlign: 'center',
+    borderTopRightRadius: '10px',
+    borderTopLeftRadius: '10px',
+    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 0,
+  },
+  eventsContainer: {
+    backgroundColor: '#e1e3ef',
+    borderRadius: 0,
+    padding: '0 10px',
+    minHeight: '500px'
+  },
+  cartLogo: {
+    background: '#ebcf19',
+    width: '45px',
+    height: '40px',
+    padding: '10px',
+    borderRadius: '50%',
+    textAlign: 'center'
+  },
+  currentStatus: {
+    color: '#c4c4c4'
+  },
+  eventDate: {
+    color: '#c4c4c4',
+    fontWeight: '300'
+  },
+  eventInfoContainer: {
+    padding: '0 10px'
+  },
+  elementsContainer: {
+    width: '50px'
+  },
+  verticalLine: {
+    position: 'relative',
+    width: '2px',
+    height: '60px',
+    background: '#c0c4df',
+    margin: '0 auto'
+  },
+  circle: {
+    width: '30px',
+    height: '30px',
+    background: '#c0c4df',
+    borderRadius: '100px',
+    position: 'relative',
+    margin: '0 auto'
   }
 }));
 
 const LandingPage = () => {
   const classes = useStyles();
   const [transaction, setTransaction] = useState({})
+  const [events, setEvents] = useState([])
+  const [currentEvent, setCurrentEvent] = useState([])
   const [trackingID, setTrackingID] = useState('')
   const [isChecked, setIsChecked] = useState('F')
   const [errors, setErrors] = useState({})
@@ -152,14 +188,42 @@ const LandingPage = () => {
     .then(function (response) {
       if (_.isEmpty(response.data.data.delivery) === false) {
         setTransaction(response.data.data.delivery)
+        let transEvents = _.reverse(response.data.data.delivery.events)
+        if (transEvents.length=== 1) {
+          setCurrentEvent(transEvents[0])
+          setEvents([])
+        } else if (transEvents.length > 1) {
+          let transEventsCopy = [...transEvents]
+          setCurrentEvent(transEvents[0])
+          transEventsCopy.shift()
+          setEvents(transEventsCopy)
+        }
       } else {
         setTransaction({})
+        setCurrentEvent({})
+        setEvents([])
         ToastEmitter('error', 'Trasanction Not found')
       }
     })
     .catch(function (error) {
+      setTransaction({})
+      setCurrentEvent({})
+      setEvents([])
       ToastEmitter('error', 'Something went wrong')
     })
+  }
+
+  const formatDate = (datetime) => {
+    return moment(datetime).format('D MMM, YYYY, h:mm:ss A');
+  }
+
+  const formatEventName = (name) => {
+    let newName = name
+    if (name !== undefined) {
+      newName = newName.replace('_', ' ')
+    }
+
+    return _.capitalize(newName)
   }
 
   return (
@@ -199,7 +263,7 @@ const LandingPage = () => {
             onClick={() => { history.push('/home'); }}
           >
             <HomeIcon />
-            Create new Booking
+            NEW BOOKING
           </Button>
         </Toolbar>
       </AppBar>
@@ -224,6 +288,10 @@ const LandingPage = () => {
       <Typography
         component={'h2'}
         variant={'h6'}
+        style={{
+          fontWeight: 'bold',
+          color: '#505caf'
+        }}
       >
         WHERE'S MY DELIVERY?
       </Typography>  
@@ -296,47 +364,100 @@ const LandingPage = () => {
           No Transaction available
         </Typography> 
       :
-        <div>
-          <h3>Details</h3>
-          <ul>
-            <li>Tracking ID: {transaction.tracking_number}</li>
-            <li>Receipt ID: {(transaction.receipt_id === '') ? 'N/A' : transaction.receipt_id}</li>
-            <li>Total Amount: {transaction.total}</li>
-            <li>Item Name: {transaction.item_description}</li>
-            <li>Booked: {transaction.created_timestamp}</li>
-          </ul>
-          
-          <h3>Events</h3>
-          <ol>{
-            transaction.events.map((event, index)=> {
-              return (<li key={index}>Event: {event.name}, Date and Time: {event.created_timestamp}, Remarks: {event.remarks}</li>)
-            })}
-          </ol>
+      <Box sx={{ maxWidth: 400 }}>
+      <Paper className={classes.currentEvent}>
+        <div style={{
+          display: 'flex',
+          textAlign: 'left'
+        }}>
+          <div className={classes.cartLogo}>
+            <ShoppingCartIcon fontSize={'large'}/>
+          </div>
+          <div style={{
+            padding: '5px'
+          }}>
+          <Typography variant="caption" className={classes.currentStatus}>
+              CURRENT STATUS
+            </Typography>
+            <Typography variant="body1" style={{
+              fontWeight: 'bold'
+            }}> 
+              {formatEventName(currentEvent.name)}
+            </Typography>
+            <Typography variant="body2" className={classes.eventDate}>
+              {formatDate(currentEvent.created_timestamp)}
+            </Typography>
+          </div>
         </div>
+      </Paper>
+      <Paper className={classes.eventsContainer}>
+      <div style={{
+        display: 'flex'
+      }}>
+          <div className={classes.elementsContainer}>
+            <div className={classes.verticalLine}></div>
+          </div>
+
+          <div style={{
+             padding: '10px'
+          }}>
+            <Typography variant="h5" style={{
+              color: '#505caf'
+            }}>
+              Timeline
+            </Typography>
+          </div>
+      </div>
+      {events.map((transEvent, index) => {
+         return (
+          <div 
+            key={index}
+            style={{
+              display: 'flex'
+            }}
+          >
+              <div className={classes.elementsContainer}>
+                <div className={classes.circle}></div>
+                <div className={classes.verticalLine}></div>
+              </div>
+
+              <div className={classes.eventInfoContainer}>
+                <Typography variant="body1" style={{
+                  fontWeight: 'bold'
+                }}>
+                  {formatEventName(transEvent.name)}
+                </Typography>
+                <Typography variant="body2" className={classes.eventDate}>
+                  {formatDate(transEvent.created_timestamp)}
+                </Typography>
+                <Typography variant="caption" className={classes.currentStatus}>
+                  {transEvent.remarks}
+                </Typography>
+              </div>
+          </div>
+         )
+      })}
+      <div style={{
+        display: 'flex'
+      }}>
+          <div className={classes.elementsContainer}>
+            <div className={classes.circle}></div>
+          </div>
+          <div className={classes.eventInfoContainer}>
+            <Typography variant="body1" style={{
+              fontWeight: 'bold'
+            }}> 
+              Order Created
+            </Typography>
+            <Typography variant="body2" className={classes.eventDate}>
+              {formatDate(transaction.created_timestamp)}
+            </Typography>
+          </div>
+      </div>
+      </Paper>
+    </Box>
         }
-        {/* <Box sx={{ maxWidth: 400 }}>
-        <Stepper activeStep={0} orientation="vertical">
-          {events.map((event, index) => (
-            <Step key={event.label}>
-              <StepLabel>
-                {event.label}
-              </StepLabel>
-              <StepContent>
-                <Typography>{event.description}</Typography>
-                
-              </StepContent>
-            </Step>
-          ))}
-        </Stepper>
-        {0 === events.length && (
-          <Paper square elevation={0} sx={{ p: 3 }}>
-            <Typography>All events completed - you&apos;re finished</Typography>
-            <Button onClick={() => {}} sx={{ mt: 1, mr: 1 }}>
-              Reset
-            </Button>
-          </Paper>
-        )}
-      </Box> */}
+        
       </Grid>
     </Grid>
     </div>

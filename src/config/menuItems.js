@@ -95,7 +95,7 @@ const getMenuItems = (props) => {
     {
       value: '/home',
       visible: isAuthorised,
-      primaryText: intl.formatMessage({ id: 'home' }),
+      primaryText: 'New Booking',
       leftIcon: <DashboardIcon />,
     },
     {

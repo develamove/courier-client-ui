@@ -72,15 +72,15 @@ const SignIn = () => {
       password: password
     })
     .then(function (response) {
-      if (_.isEmpty(response.errors) === false) {
-        setIsValid(false)
-      } else {
+      if (_.isEmpty(response.data.data.client_id) === true && _.isEmpty(response.data.data.token) === false) {
         setIsValid(true)
         authenticate({
           displayName: username,
           email: 'user',
           token: response.data.data.token
         })
+      } else {
+        setIsValid(false)
       }
     })
     .catch(function (error) {

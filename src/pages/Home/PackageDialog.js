@@ -124,7 +124,7 @@ const PackageDialog = (props) => {
       getPackageInfo({
         item_name: packageName,
         item_description: packageName,
-        item_value: packageValue,
+        item_value: (_.isEmpty(packageValue) === true ? 0 : packageValue),
         payment_method: paymentMethod,
         package: packageTypes[selectedPackage]
       })

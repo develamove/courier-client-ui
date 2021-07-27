@@ -248,7 +248,7 @@ const AddressDialog = (props) => {
             }}
             margin="dense"
             // label={capitalizeFirstLetter(type) + '\'s Street'}
-            label={'Adress'}
+            label={'Address'}
             type="text"
             name={"street"}
             value={info.street}
@@ -405,7 +405,7 @@ const AddressDialog = (props) => {
             name={"landmarks"}
             value={info.landmarks}
             onChange={handleInfoChange}
-            label="Landmark"
+            label="Landmark (Optional)"
             type="text"
             fullWidth
           />

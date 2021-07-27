@@ -50,7 +50,7 @@ const defaultDelivery = {
   item_type: 'S',
   item_amount: 0,
   total_amount: 0,
-  service_fees_payor: 'sender',
+  service_fees_payor: '',
   package: {
     item_name: '',
     item_description: '',
@@ -274,7 +274,7 @@ const HomePage = () => {
     let deliveryInfo = {
        item_type: delivery.package.package.item_type,
        item_description: delivery.package.item_name,
-       item_value: parseInt(delivery.package.item_value, 10),
+       item_value: (_.isEmpty(delivery.package.item_value) === true ? 0 : parseInt(delivery.package.item_value, 10)),
        payment_method: delivery.package.payment_method,
        service_fees_payor: delivery.service_fees_payor,
        sender: {
@@ -332,7 +332,7 @@ const HomePage = () => {
           auth.setAuth({ isAuthenticated: false })
         }, 1500);
       } else {
-        ToastEmitter('error', 'Something wrong, please refresh the page!')
+        ToastEmitter('error', 'Please refresh the page!')
       }
     })
   }
@@ -364,6 +364,11 @@ const HomePage = () => {
   }
 
   const handleFinish = () => {
+    if (_.isEmpty(delivery.service_fees_payor) === true) {
+      ToastEmitter('error', 'Please select shipping Fee payor!')
+      return
+    }
+
     confirm({ 
       title: 'Booking confirmation',
       description: 'Make sure the details you entered are correct. Do you want to proceed?', 

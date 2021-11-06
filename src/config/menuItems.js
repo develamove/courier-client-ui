@@ -4,19 +4,16 @@ import {
   ChromeReaderMode,
   Dashboard as DashboardIcon,
   ExitToApp as ExitToAppIcon,
-  FormatTextdirectionRToL as RTLIcon,
-  FormatTextdirectionLToR as LTRIcon,
   GetApp,
   Language as LanguageIcon,
   ViewList as ViewListIcon,
   Lock as LockIcon,
   MenuOpen as MenuOpenIcon,
-  SettingsApplications as SettingsIcon,
-  Style as StyleIcon,
+  SettingsApplications as SettingsIcon
 } from '@material-ui/icons'
 
 import allLocales from './locales'
-import allThemes from './themes'
+// import allThemes from './themes'
 
 const getMenuItems = (props) => {
   const {
@@ -24,7 +21,7 @@ const getMenuItems = (props) => {
     updateLocale,
     locale,
     menuContext,
-    themeContext,
+    // themeContext,
     a2HSContext,
     auth: authData,
   } = props
@@ -35,7 +32,7 @@ const getMenuItems = (props) => {
     isAuthMenuOpen,
     isMiniSwitchVisibility,
   } = menuContext
-  const { themeID, setThemeID, isRTL, toggleThisTheme } = themeContext
+  // const { themeID, setThemeID, isRTL, toggleThisTheme } = themeContext
 
   const { auth, setAuth } = authData
   const { isAppInstallable, isAppInstalled, deferredPrompt } = a2HSContext
@@ -54,17 +51,17 @@ const getMenuItems = (props) => {
 
   const isAuthorised = auth.isAuthenticated
 
-  const themeItems = allThemes.map((t) => {
-    return {
-      value: undefined,
-      visible: true,
-      primaryText: intl.formatMessage({ id: t.id }),
-      onClick: () => {
-        setThemeID(t.id)
-      },
-      leftIcon: <StyleIcon style={{ color: t.color }} />,
-    }
-  })
+  // const themeItems = allThemes.map((t) => {
+  //   return {
+  //     value: undefined,
+  //     visible: true,
+  //     primaryText: intl.formatMessage({ id: t.id }),
+  //     onClick: () => {
+  //       setThemeID(t.id)
+  //     },
+  //     leftIcon: <StyleIcon style={{ color: t.color }} />,
+  //   }
+  // })
 
   if (isAuthMenuOpen || !isAuthorised) {
     return [
@@ -110,13 +107,6 @@ const getMenuItems = (props) => {
       leftIcon: <SettingsIcon />,
       nestedItems: [
         {
-          primaryText: intl.formatMessage({ id: 'theme' }),
-          secondaryText: intl.formatMessage({ id: themeID }),
-          primaryTogglesNestedList: true,
-          leftIcon: <StyleIcon />,
-          nestedItems: themeItems,
-        },
-        {
           primaryText: intl.formatMessage({ id: 'language' }),
           secondaryText: intl.formatMessage({ id: locale }),
           primaryTogglesNestedList: true,
@@ -136,13 +126,6 @@ const getMenuItems = (props) => {
           ) : (
             <ChromeReaderMode />
           ),
-        },
-        {
-          onClick: () => {
-            toggleThisTheme('isRTL')
-          },
-          primaryText: `${isRTL ? 'LTR' : 'RTL'} mode`,
-          leftIcon: isRTL ? <LTRIcon /> : <RTLIcon />,
         },
       ],
     },

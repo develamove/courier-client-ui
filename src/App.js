@@ -10,7 +10,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
 const config = merge(MUIConfig, _config)
 
-export default class Demo extends Component {
+export default class ElamoveApp extends Component {
   render() {
     return (
       <ConfirmProvider>
